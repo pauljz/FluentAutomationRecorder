@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="jquery.js"></script>
+<style>
+body, document, html {
+	margin:0;
+	padding:0;
+}
+body {
+	font-family: Tahoma, sans-serif;
+	font-size:10pt;
+	padding:0px;
+	display:none;
+}
+a {
+	display:block;
+	white-space:nowrap;
+	padding:0;
+	border-bottom: 1px #aac solid;
+	padding: 6px;
+}
+a:last-child {
+	border-bottom:none;
+}
+a:hover { background:#ddf }
+</style>
+<script>
+
+function UpdateLinks(status) {
+	$('body').hide();
+	$('a').show(0);
+	if ( status == 1 ) {
+		// 1 = recording
+		$('#StartRecording').hide();
+		$('#ResumeRecording').hide();
+	} else if ( status == 2 ) {
+		// 2 = paused
+		$('#StartRecording').hide();
+		$('#PauseRecording').hide();
+	} else {
+		// 0 = stopped
+		$('#StopRecording').hide();
+		$('#PauseRecording').hide();
+		$('#ResumeRecording').hide();
+		
+	}
+	$('body').show();
+}
+
+function ExportTest() {
+	chrome.tabs.getSelected( null, function(tab) {
+		var request = { Method: 'GetRecording', TabID: tab.id };
+		chrome.extension.sendRequest( request, function( response ) {
+			if ( response ) {
+				alert( JSON.stringify( response ) );
+			}
+			ClosePopup();
+		});
+	});
+}
+
+function RunTest() {
+	chrome.tabs.getSelected( null, function(tab) {
+		var request = { Method: 'GetRecording', TabID: tab.id };
+		chrome.extension.sendRequest( request, function( response ) {
+			if ( response ) {
+				$.ajax({
+					type: "POST",
+					contentType: "application/json; charset=utf-8",
+					url: "http://localhost:10001/RunTest",
+					data: JSON.stringify( response )
+				})
+			}
+			ClosePopup();
+		});
+	});
+}
+
+function ClosePopup() {
+	chrome.tabs.getSelected( null, function(tab) {
+		// selecting the current tab kills the popup reliably
+		chrome.tabs.update( tab.id, { selected: true } )
+	});
+}
+
+var GetStatus = function() {
+	chrome.extension.sendRequest({Method:'GetRecordingStatus'}, function(status) { 
+		UpdateLinks( status );
+	});
+};
+
+$(document).ready( GetStatus );
+chrome.tabs.onSelectionChanged.addListener( GetStatus );
+
+</script>
+
+</head>
+<body>
+<a id="StartRecording" href="javascript:chrome.extension.sendRequest({Method:'StartRecording'},function(){ClosePopup()});">Start recording</a>
+<a id="ResumeRecording" href="javascript:chrome.extension.sendRequest({Method:'ResumeRecording'},function(){ClosePopup()});">Resume recording</a>
+<a id="PauseRecording" href="javascript:chrome.extension.sendRequest({Method:'PauseRecording'},function(){ClosePopup()});">Pause recording</a>
+<a id="StopRecording" href="javascript:chrome.extension.sendRequest({Method:'StopRecording'});ExportTest();">Stop recording</a>
+<a id="ManageRecordings" href="manage.html" target="FAR_Manage">Manage recordings</a>
+<a id="ExportTest" href="javascript:ExportTest();">Export test</a>
+<a id="RunTest" href="javascript:RunTest();">Run test</a>
+</body>
+</html>

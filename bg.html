@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="FARDB.js"></script>
+<script>
+
+Status = {
+	Stopped: null,
+	Recording: 1,
+	Paused: 2
+};
+
+Recordings = [];
+RecordingStatus = [];
+
+function UpdateIcon(tabId) {
+	
+	if ( tabId === null ) {
+		chrome.tabs.getSelected( null, function(tab) {
+				UpdateIcon(tab.id);
+		});
+	} else {
+		chrome.tabs.getSelected( null, function(tab) {
+			var status = RecordingStatus[tab.id];
+			if ( status == Status.Recording ) {
+				chrome.browserAction.setIcon( { path: "images/icon_19.png" } );
+			} else {
+				chrome.browserAction.setIcon( { path: "images/icon_19_inactive.png" } );
+			}
+		});
+	}
+}
+
+chrome.tabs.onSelectionChanged.addListener( function( tabId, selectInfo) {
+	UpdateIcon(tabId);
+});
+
+function GetRecordingStatus( request, sender, sendResponse ) {
+	chrome.tabs.getSelected( null, function(tab) {
+		sendResponse( RecordingStatus[ tab.id ] );
+	});
+}
+
+function StartRecording( request, sender, sendResponse ) {
+	chrome.tabs.getSelected( null, function(tab) {
+		RecordingStatus[ tab.id ] = Status.Recording;
+
+		Recordings[ tab.id ] = [];
+		// and add the current URL as an Open event
+		Recordings[ tab.id ].push( {
+			Name: 'Open',
+			Arguments: {
+				Url: tab.url
+			}
+		} );		
+		
+		UpdateIcon();
+		sendResponse({});
+	});
+}
+
+function StopRecording( request, sender, sendResponse ) {
+	chrome.tabs.getSelected( null, function(tab) {
+		RecordingStatus[ tab.id ] = Status.Stopped;
+		UpdateIcon();
+		var recording = Recordings[ tab.id ]
+		FARDB.Put( recording );
+		alert( JSON.stringify( recording ) );
+		delete Recordings[ tab.id ];
+		sendResponse({});
+	});
+}
+
+function PauseRecording( request, sender, sendResponse ) {
+	chrome.tabs.getSelected( null, function(tab) {
+		RecordingStatus[ tab.id ] = Status.Paused;
+		UpdateIcon();
+		sendResponse({});
+	});
+}
+
+function ResumeRecording( request, sender, sendResponse ) {
+	chrome.tabs.getSelected( null, function(tab) {
+		RecordingStatus[ tab.id ] = Status.Recording;
+		UpdateIcon();
+		sendResponse({});
+	});
+}
+
+function SaveAction( request, sender, sendResponse ) {
+	
+	// make sure we are recording
+	var status = RecordingStatus[sender.tab.id];
+	if ( status == Status.Recording ) {
+
+		// we are recording, but no recording has happened for this tab yet, so initialize the array
+		if ( typeof Recordings[ sender.tab.id ] === 'undefined' ) {
+			Recordings[ sender.tab.id ] = [];
+			// and add the current URL as an Open event
+			Recordings[ sender.tab.id ].push( {
+				Name: 'Open',
+				Arguments: {
+					Url: sender.tab.url
+				}
+			} );			
+		}
+		Recordings[ sender.tab.id ].push( request.Action );
+		
+	}
+	sendResponse({});
+}
+
+function GetRecording( request, sender, sendResponse ) {
+	if ( request.TabID ) {
+		tabID = request.TabID;
+	} else {
+		tabID = sender.tab.id;
+	}			
+	sendResponse( Recordings[tabID] );
+}
+
+function GetRecordings( request, sender, sendResponse ) {
+	var recordingIDs = [];
+	for ( var i in Recordings ) {
+		recordingIDs.push( i );
+	}
+	sendResponse( recordingIDs );
+}
+
+chrome.extension.onRequest.addListener( function( request, sender, sendResponse ) {
+	switch( request.Method ) {
+		case 'SaveAction':
+			SaveAction( request, sender, sendResponse );
+		break;
+		case 'GetRecording':
+			GetRecording( request, sender, sendResponse );
+		break;
+		case 'GetRecordings':
+			GetRecordings( request, sender, sendResponse );
+		break;
+		case 'GetRecordingStatus':
+			GetRecordingStatus( request, sender, sendResponse );
+		break;		
+		case 'StartRecording':
+			StartRecording( request, sender, sendResponse );
+		break;
+		case 'StopRecording':
+			StopRecording( request, sender, sendResponse );
+		break;
+		case 'PauseRecording':
+			PauseRecording( request, sender, sendResponse );
+		break;
+		case 'ResumeRecording':
+			ResumeRecording( request, sender, sendResponse );
+		break;		
+	}
+});
+
+</script>
+</head>
+</html>

@@ -1,0 +1,41 @@
+{
+	"name": "FluentAutomation Recorder",
+	"version": "0.1",
+	"description": "Records actions on a page for playback as tests using FluentAutomation",
+	"background_page": "bg.html",
+	"options_page": "manage.html",
+	
+	"icons": {
+		"128": "images/icon_128.png"
+	},
+	
+	"permissions": [
+		"http://*/",
+		"https://*/",
+		"tabs"
+	],
+	
+	"options_page": "manage.html",
+	
+	"browser_action": {
+		"default_title": "",
+		"default_icon": "images/icon_19_inactive.png",
+		"default_popup": "popup.html"
+	},
+	
+	"content_scripts": [
+		{
+			"run_at": "document_end",
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"js": [
+				"jquery.js",
+				"FAR.js",
+				"FARDB.js"
+			]
+		}
+	]
+	
+}
