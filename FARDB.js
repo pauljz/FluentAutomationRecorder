@@ -68,7 +68,7 @@ var FARDB = {
 			// not in the index, nothing to do
 			return;
 		}
-		delete index[i];
+		index.splice(i,1);
 		
 		// if the index is now empty, destroy it
 		if ( index.length == 0 ) {
@@ -120,7 +120,7 @@ var FARDB = {
 	
 	RemoveLabel: function( id, label ) {
 		var recordingHolder = FARDB.Get( id );
-		delete recordingHolder.Labels[ recordingHolder.Labels.indexOf(id) ]; 		
+		recordingHolder.Labels.splice( recordingHolder.Labels.indexOf(id), 1);
 		FARDB.Save( recordingHolder );
 		FARDB.RemoveFromIndex( id, 'Label_' + label );
 	},
