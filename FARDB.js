@@ -13,7 +13,7 @@ var FARDB = {
 	Put: function( recording ) {
 		var recordingHolder = RecordingHolder(recording);
 		
-		FARDB.AddToIndex( 'AllRecordings', recordingHolder.Created );
+		FARDB.AddToIndex( recordingHolder.Created, 'AllRecordings' );
 		
 		localStorage.setItem( 'Recording_' + recordingHolder.Created , JSON.stringify( recordingHolder ) );
 	},
@@ -31,12 +31,12 @@ var FARDB = {
 		
 		// Remove from label indexes
 		for ( i in recordingHolder.Labels ) {
-			FARDB.RemoveFromIndex( 'Label_' + recordingHolder.Labels[i], id );
+			FARDB.RemoveFromIndex( id, 'Label_' + recordingHolder.Labels[i]);
 		}
 		
 		// Remove from All and Star indexes
-		FARDB.RemoveFromIndex( 'Starred', id );
-		FARDB.RemoveFromIndex( 'AllRecordings', id );
+		FARDB.RemoveFromIndex( id, 'Starred' );
+		FARDB.RemoveFromIndex( id, 'AllRecordings' );
 		
 		// remove row entirely
 		localStorage.removeItem( 'Recording_' + id );
