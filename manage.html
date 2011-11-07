@@ -4,8 +4,8 @@
 	<meta charset="utf-8">
 	<script src="3rdparty/jquery.js"></script>
 	<script src="3rdparty/knockout-1.3beta.js"></script>
-	<script src="FARManager.js"></script>
 	<script src="FARDB.js"></script>
+	<script src="FARManager.js"></script>
 	<link rel="stylesheet" href="manage.css" />
 	<link rel="shortcut icon" href="images/icon_19_inactive.png" />
 </head>
@@ -14,54 +14,45 @@
 <div id="navbar-container">
 	<h1 id="navbar-content-title"><img src="images/header.png" alt="Fluent Automation Recorder" /></h1>
 	<ul>
-		<li class="navbar-item">All Recordings</li>
-		<li class="navbar-item">Starred</li>
-		<li class="navbar-item">Named</li>
+		<li class="navbar-item" onclick="FARManager.ListAll();" data-bind="css: { 'navbar-item-selected': activeTab() == 'All Recordings' }" >All Recordings</li>
+		<li class="navbar-item" onclick="FARManager.ListStarred();" data-bind="css: { 'navbar-item-selected': activeTab() == 'Starred' }" >Starred</li>
+		<li class="navbar-item" onclick="FARManager.ListNamed();" data-bind="css: { 'navbar-item-selected': activeTab() == 'Named' }" >Named</li>
+	</ul>
+	<ul data-bind="foreach: labels">
+		<li class="navbar-item" onclick="FARManager.ListLabel(this);" data-bind="
+			text: $data,
+			css: { 'navbar-item-selected': $root.activeTab() == 'Label: ' + $data },
+			attr: {
+				'data-tabname': 'Label: ' + $data,
+				'data-labelname': $data
+			}
+		"></li>
 	</ul>
 	<ul>
-		<li class="navbar-item">Custom Label 1</li>
-		<li class="navbar-item navbar-item-selected">Custom Label 2</li>
-		<li class="navbar-item">Custom Label 3</li>
-	</ul>
-	<ul>
-		<li class="navbar-item">Settings</li>
-		<li class="navbar-item">Help</li>
+		<li class="navbar-item" data-bind="css: { 'navbar-item-selected': activeTab() == 'Settings' }">Settings</li>
+		<li class="navbar-item" data-bind="css: { 'navbar-item-selected': activeTab() == 'Help' }">Help</li>
 	</ul>
 	
 </div>
 
 <div id="mainview">
 	<div id="content">
-		<h1>Custom Label 2</h1>
 		
-		<ul id="recordinglist">
-			<li>
+		<h1 data-bind="text: activeTab"></h1>
+		
+		<ul id="recordinglist" data-bind="foreach: recordings">
+			<li data-bind="attr: { 'data-key': Created, 'data-recording': JSON.stringify(Recording) }" onclick="alert( $(this).attr('data-recording') )">
 				<div class="dragbar">::</div>
-				<div class="star"><div class="starbutton off"></div></div>
-				<div class="date">10/31/2011 11:57 PM</div>
-				<div class="link">http://www.datinix.net/fartest.html</div>
-				<div class="labels"></div>
-			</li>
-			<li>
-				<div class="dragbar">::</div>
-				<div class="star"><div class="starbutton on"></div></div>
-				<div class="date">10/31/2011 11:51 PM</div>
-				<div class="link">http://www.datinix.net/fartest.html</div>
-				<div class="labels"></div>
-			</li>
-			<li>
-				<div class="dragbar">::</div>
-				<div class="star"><div class="starbutton off"></div></div>
-				<div class="date">10/31/2011 10:15 PM</div>
-				<div class="link">http://www.datinix.net/fartest.html</div>
-				<div class="labels"></div>
-			</li>
-			<li>
-				<div class="dragbar">::</div>
-				<div class="star"><div class="starbutton off"></div></div>
-				<div class="date">10/30/2011 9:34 PM</div>
-				<div class="link">http://www.datinix.net/fartest.html</div>
-				<div class="labels"></div>
+				<div class="star" data-bind="click: FARManager.ToggleStar, clickBubble: false">
+					<div class="starbutton" data-bind="css: { on: Starred }"></div>
+				</div>
+				<div class="date" data-bind="text: FARManager.DateFormat( Created )"></div>
+				<div class="link" data-bind="text: ( Name || Recording[0].Arguments.Url )"></div>
+				<div class="labels">
+					<ul data-bind="foreach: Labels">
+						<li data-bind="text: $data"></li>
+					</ul>
+				</div>
 			</li>
 		</ul>
 		

@@ -24,7 +24,7 @@ body {
 	border:1px #c6c9ce solid;
 }
 
-#recordinglist li {
+#recordinglist > li {
 	list-style-type:none;
 	margin:0;
 	padding:0;
@@ -32,8 +32,8 @@ body {
 	background:#EEE;
 	-webkit-box-shadow: 0px 1px 0px #f7f7f7;
 	border-bottom: 1px solid #CCC;
-	
 	position:relative;
+	cursor:pointer;
 }
 
 #recordinglist li > div { padding-top:8px; }
@@ -46,7 +46,24 @@ body {
 #recordinglist .starbutton:hover { background-position: -40px 0px; }
 #recordinglist .date { position:absolute; left:50px; top:0px; width:150px; color:#666; }
 #recordinglist .link { position:absolute; left:200px; right:0; top:0; }
-#recordinglist .labels { display:inline-block; position:absolute; right:0px; top:0px; text-align:right; }
+#recordinglist .labels ul {
+	display:inline-block;
+	position:absolute;
+	right:0px;
+	top:6px;
+	text-align:right;
+}
+#recordinglist .labels li {
+	display:block;
+	float:right;
+	background:#888;
+	color:white;
+	font-size:11px;
+	margin:0px 6px 0px 0px;
+	padding:1px 4px;
+	border:1px #444 solid;
+	border-radius:4px;
+}
 
 /* From Chrome: */
 
