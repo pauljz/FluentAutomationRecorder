@@ -140,6 +140,44 @@ var FARDB = {
 		}
 	},
 	
+	GetFromIndex: function( indexName ) {
+		var idsJSON = localStorage.getItem( indexName );
+		if ( idsJSON === null ) {
+			return [];
+		}
+		var ids = JSON.parse( idsJSON );
+		var recordingHolders = [];
+		for ( var i in ids ) {
+			recordingHolders.push( FARDB.Get( ids[i] ) );
+		}
+		
+		return recordingHolders;
+	},
+	
+	GetAll: function() {
+		return FARDB.GetFromIndex( 'AllRecordings' );
+	},
+	
+	GetStarred: function() {
+		return FARDB.GetFromIndex( 'Starred' );
+	},
+	
+	GetLabel: function(label) {
+		return FARDB.GetFromIndex( 'Label_' + label );
+	},
+	
+	GetLabels: function() {
+		var labelJSON = localStorage.getItem( 'Labels' );
+		if ( labelJSON === null ) {
+			return [];
+		}
+		var labels = JSON.parse( labelJSON );
+		for ( i in labels ) {
+			labels[i] = labels[i].replace( /^Label_/, '' );
+		}
+		return labels;
+	},
+	
 	Debug: function() {
 		for ( var i = 0; i < localStorage.length; i++ ) {
 			var key = localStorage.key(i);
