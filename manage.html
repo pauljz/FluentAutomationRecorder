@@ -2,10 +2,13 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<title>Fluent Automation Recorder / Manage</title>
 	<script src="3rdparty/jquery.js"></script>
 	<script src="3rdparty/knockout-1.3beta.js"></script>
 	<script src="FARDB.js"></script>
 	<script src="FARManager.js"></script>
+	<link rel="stylesheet" href="3rdparty/chrome-shared.css" />
+	<link rel="stylesheet" href="3rdparty/chrome-button.css" />
 	<link rel="stylesheet" href="manage.css" />
 	<link rel="shortcut icon" href="images/icon_19_inactive.png" />
 </head>
@@ -41,13 +44,21 @@
 		<h1 data-bind="text: activeTab"></h1>
 		
 		<ul id="recordinglist" data-bind="foreach: recordings">
-			<li data-bind="attr: { 'data-key': Created, 'data-recording': JSON.stringify(Recording) }" onclick="alert( $(this).attr('data-recording') )">
+			<li data-bind="
+				attr: {
+					'data-key': Created,
+					'data-recording': JSON.stringify(Recording)
+				},
+				click: function() { ViewModel.recording($data); },
+				css: { selected: $root.recording().Created == Created }
+			">
 				<div class="dragbar">::</div>
 				<div class="star" data-bind="click: FARManager.ToggleStar, clickBubble: false">
 					<div class="starbutton" data-bind="css: { on: Starred }"></div>
 				</div>
 				<div class="date" data-bind="text: FARManager.DateFormat( Created )"></div>
-				<div class="link" data-bind="text: ( Name || Recording[0].Arguments.Url )"></div>
+				<div class="name" data-bind="text: Name, visible: Name"></div>
+				<div class="link" data-bind="text: Recording[0].Arguments.Url, visible: !Name"></div>
 				<div class="labels">
 					<ul data-bind="foreach: Labels">
 						<li data-bind="text: $data"></li>
@@ -55,6 +66,62 @@
 				</div>
 			</li>
 		</ul>
+		
+		<div id="recording-details" data-bind="visible: recording().Created">
+			<h1 id="recording-name" data-bind="text: (recording().Name || 'Unnamed recording')"></h1>
+			<input id="recording-name-edit" type="text" data-bind="value: recording().Name"/>
+			
+			<dl>
+				<dt>Created:</dt>
+				<dd data-bind="text: FARManager.DateFormat( recording().Created )"></dd>
+				
+				<dt>URL:</dt>
+				<dd data-bind="text: recording().Recording ? recording().Recording[0].Arguments.Url : ''"></dd>
+
+				<dt>Actions:</dt>
+				<dd><input id="run-test" type="button" value="Run Test" /></dd>
+				
+			</dl>
+			
+			<div id="recording-recording">
+			
+				<div id="recording-json-container">
+					<h3 id="recording-header-json">JSON</h3>
+					<textarea id="recording-json" data-bind="html: JSON.stringify( recording().Recording )" readonly="readonly"></textarea>
+				</div>
+				
+				<h3>Steps</h3>
+				<ul id="recording-steps" data-bind="foreach: recording().Recording">
+					<li data-bind="visible: $data.Name">
+						<span class="action"   data-bind="html: $data.Name"></span>
+						
+						<span class="selector" data-bind="
+							visible: $data.Arguments ? $data.Arguments.Selector : '',
+							html: $data.Arguments ? $data.Arguments.Selector : ''
+						"></span>
+						
+						<span class="value" data-bind="
+							visible: $data.Arguments ? $data.Arguments.Value : '',
+							html: $data.Arguments ? $data.Arguments.Value : ''
+						"></span>
+						
+						<span class="value" data-bind="
+							visible: $data.Arguments ? $data.Arguments.Values : '',
+							html: $data.Arguments ? $data.Arguments.Values : ''
+						"></span>						
+						
+						<span class="url" data-bind="visible: $data.Arguments ? $data.Arguments.Url : ''">
+							<a target="_BLANK" data-bind="
+								attr: { href: $data.Arguments ? $data.Arguments.Url : '' },
+								html: $data.Arguments ? $data.Arguments.Url : ''
+							"></a>
+						</span>
+					</li>
+				</ul>
+			
+			</div>
+			
+		</div>
 		
 	</div>
 </div>

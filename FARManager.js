@@ -2,18 +2,73 @@ $(document).ready( function() {
 	ViewModel = {
 		labels: ko.observableArray([]),
 		recordings: ko.observableArray([]),
-		activeTab: ko.observable('All Recordings')
+		activeTab: ko.observable('All Recordings'),
+		recording: ko.observable({})
 	};
 
 	ko.applyBindings(ViewModel);
 	
 	ViewModel.LoadRecordingsOnTabChange = ko.dependentObservable( function() {
+		// whenever the tab is changed, re-load the recordings
 		FARManager.LoadRecordings();
 		return ViewModel.activeTab();
 	}, ViewModel );
+	
+	ViewModel.RefreshRecordingDetailsOnSelect = ko.dependentObservable( function() {
+		// Resizes the JSON textarea to fit its contents
+		
+		// First null it out first so the scrollHeight is accurate
+		$('#recording-json').height( 0 );
+		// Now resize the textarea to the scrollHeight, -12px to account for the padding
+		$('#recording-json').height( $('#recording-json')[0].scrollHeight - 12 );
+		
+		return ViewModel.recording();
+	}, ViewModel );
 
+	// Initialise the left hand labels and load the recordings
 	ViewModel.labels( FARDB.GetLabels() );	
 	FARManager.LoadRecordings();
+	
+	
+	// Now attach non-KO events ...
+	
+	$('#recording-name').click( function() {
+		$('#recording-name').hide();
+		$('#recording-name-edit').show();
+		$('#recording-name-edit').focus();
+	});
+	
+	$('#recording-name-edit').change( function() {
+		
+		// Get the edited name and edit the record in the DB
+		var name = $(this).val();
+		FARDB.Name( ViewModel.recording().Created, name );
+		
+		// Update the recording in the ViewModel
+		var recording = ViewModel.recording();
+		recording.Name = name; 
+		ViewModel.recording( recording );
+		
+		// Refresh the recodings in the ViewModel - easier than updating ViewModel.recordings
+		FARManager.LoadRecordings();
+		
+	}).blur( function() {
+		$('#recording-name').show();
+		$('#recording-name-edit').hide();
+	});
+	
+	$('#recording-json').click( function() {
+		$(this).select();
+	});
+	
+	$(window).focus( function() {
+		// if the user has left and come back, reload data. 
+		ViewModel.labels( FARDB.GetLabels() );	
+		FARManager.LoadRecordings();
+	});
+	
+	$('#run-test').click( FARManager.RunTest );
+	
 });
 
 FARManager = {
@@ -70,6 +125,15 @@ FARManager = {
 		}
 		
 		FARManager.LoadRecordings();
+	},
+	
+	RunTest: function(event) {
+		$.ajax({
+			type: "POST",
+			contentType: "application/json; charset=utf-8",
+			url: "http://localhost:10001/RunTest",
+			data: $('#recording-json').val()
+		})
 	},
 	
 	DateFormat: function( ms ) {
