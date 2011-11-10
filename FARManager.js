@@ -3,7 +3,8 @@ $(document).ready( function() {
 		labels: ko.observableArray([]),
 		recordings: ko.observableArray([]),
 		activeTab: ko.observable('All Recordings'),
-		recording: ko.observable({})
+		recording: ko.observable({}),
+		localStorageUsage: ko.observable(FARDB.GetUsage())
 	};
 
 	ko.applyBindings(ViewModel);
@@ -11,6 +12,11 @@ $(document).ready( function() {
 	ViewModel.LoadRecordingsOnTabChange = ko.dependentObservable( function() {
 		// whenever the tab is changed, re-load the recordings
 		FARManager.LoadRecordings();
+		
+		if ( ViewModel.activeTab() == 'Settings' ) {
+			FARManager.UpdateSettings();
+		}
+		
 		return ViewModel.activeTab();
 	}, ViewModel );
 	
@@ -134,6 +140,10 @@ FARManager = {
 			url: "http://localhost:10001/RunTest",
 			data: $('#recording-json').val()
 		})
+	},
+	
+	UpdateSettings: function() {
+		ViewModel.localStorageUsage( FARDB.GetUsage() );
 	},
 	
 	DateFormat: function( ms ) {
