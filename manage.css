@@ -38,13 +38,20 @@ body {
 	margin-bottom:10px;
 }
 
+/* Settings tab */
+
+#content #settings dd { padding-left:100px; }
+#content #settings dd input { margin:0; }
+#content #settings dd .description { margin-top:2px; font-size:11px; font-style:italic; }
+#content #settings #setting-uniqueAttributes { width:300px; }
+
 /***** Recording List *****/
 
 #recordinglist {
 	-webkit-box-shadow:inset 5px 5px 20px #c6c9ce;
 	background: -webkit-linear-gradient(rgba(234, 238, 243, 0.2), #EAEEF3);	
-	min-height:240px;
-	max-height:240px;
+	min-height:247px;
+	max-height:247px;
 	overflow-y:auto;
 	overflow-x:hidden;
 	padding:0;

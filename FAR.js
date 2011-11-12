@@ -1,5 +1,5 @@
 var FAR = {
-	uniqueAttributes: [ 'data-key' ],
+	uniqueAttributes: [],
 	hoverTarget: null,
 	
 	SaveAction: function( action ) {
@@ -239,6 +239,11 @@ var FAR = {
 	},
 	
 	Init: function() {
+		
+		chrome.extension.sendRequest( { Method: 'GetSetting', Setting: 'uniqueAttributes' }, function(response) {
+			FAR.uniqueAttributes = response;
+		});
+		
 		$(document).mousedown( FAR.Listeners.Click );
 		$(document).keypress( FAR.Listeners.Press );
 		$(document).keydown( FAR.Listeners.KeyDown );

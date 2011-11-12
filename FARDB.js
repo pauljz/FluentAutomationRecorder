@@ -178,6 +178,30 @@ var FARDB = {
 		return labels;
 	},
 	
+	GetSettings: function() {
+		var settings = JSON.parse( localStorage.getItem( "Settings" ) );
+		if ( settings === null ) {
+			// initialise settings with defaults
+			settings = {
+				uniqueAttributes: [ 'data-key' ]
+			};
+			localStorage.setItem( "Settings", JSON.stringify( settings ) );
+		}
+		return settings;
+	},
+	
+	SetSetting: function( setting, value ) {
+		var settings = FARDB.GetSettings();
+		settings[ setting ] = value;
+		localStorage.setItem( "Settings", JSON.stringify( settings ) );
+		return true;
+	},
+	
+	GetSetting: function( setting ) {
+		var settings = FARDB.GetSettings();
+		return settings[ setting ];
+	},
+	
 	Debug: function() {
 		for ( var i = 0; i < localStorage.length; i++ ) {
 			var key = localStorage.key(i);

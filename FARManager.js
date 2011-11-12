@@ -4,7 +4,10 @@ $(document).ready( function() {
 		recordings: ko.observableArray([]),
 		activeTab: ko.observable('All Recordings'),
 		recording: ko.observable({}),
-		localStorageUsage: ko.observable(FARDB.GetUsage())
+		localStorageUsage: ko.observable(FARDB.GetUsage()),
+		settings: {
+			uniqueAttributes: ko.observable()
+		}
 	};
 
 	ko.applyBindings(ViewModel);
@@ -144,6 +147,11 @@ FARManager = {
 	
 	UpdateSettings: function() {
 		ViewModel.localStorageUsage( FARDB.GetUsage() );
+		ViewModel.settings.uniqueAttributes( FARDB.GetSetting('uniqueAttributes').join(',') );
+	},
+	
+	SaveSettings: function() {
+		FARDB.SetSetting( 'uniqueAttributes', $('#setting-uniqueAttributes').val().split(',') );
 	},
 	
 	DateFormat: function( ms ) {

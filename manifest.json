@@ -32,8 +32,7 @@
 			],
 			"js": [
 				"3rdparty/jquery.js",
-				"FAR.js",
-				"FARDB.js"
+				"FAR.js"
 			]
 		}
 	]

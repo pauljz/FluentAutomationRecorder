@@ -152,7 +152,11 @@ chrome.extension.onRequest.addListener( function( request, sender, sendResponse 
 		break;
 		case 'ResumeRecording':
 			ResumeRecording( request, sender, sendResponse );
-		break;		
+		break;
+		case 'GetSetting':
+			var setting = FARDB.GetSetting( request.Setting );
+			sendResponse( setting );
+		break;
 	}
 });
 

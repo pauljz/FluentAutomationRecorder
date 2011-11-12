@@ -126,13 +126,17 @@
 			
 		</div>
 		
-		<div data-bind="visible: activeTab() == 'Settings'">
+		<div id="settings" data-bind="visible: activeTab() == 'Settings'">
 			
 			<dl>
 				<dt>Storage Usage:</dt>
 				<dd>
 					<span data-bind="html: localStorageUsage().Percent.toFixed(2) + '%'"></span>
 					(<span data-bind="html: localStorageUsage().Bytes"></span> / 5,242,880 bytes)
+				</dd>
+				<dt>Unique Attributes:</dt>
+				<dd><input id="setting-uniqueAttributes" type="text" data-bind="value: settings.uniqueAttributes" onchange="FARManager.SaveSettings();" />
+					<div class="description">Comma-delimited list of attributes that will be considered unique for resolving selectors.</div>
 				</dd>
 			</dl>
 			
