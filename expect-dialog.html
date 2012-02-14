@@ -1,0 +1,33 @@
+<h1>Expect Builder</h1>
+
+<label>I Expect ...
+	<select id="far-expect-type" name="far-expect-type">
+		<option value="Text">Text</option>
+		<option value="Value">Value</option>
+		<option value="Element">Element</option>
+		<option value="Count">Count</option>
+		<option value="CssClass">CSS Class</option>
+		<option value="Popup">Popup</option>
+	</select>
+</label>
+
+<label data-farmode="Text,Value,CssClass,Popup">
+	<input name="far-expect-text" type="text" />
+</label>
+
+<label data-farmode="Count">
+	<input name="far-expect-count" type="number" />
+</label>
+
+<label data-farmode="Text,Value,Element,Count,CssClass">
+	<span data-farmode="Text,Value">In ...</span>
+	<span data-farmode="CssClass">On ...</span>
+	<span data-farmode="Count">Of ...</span>
+	<input name="far-expect-selector" type="text" />
+</label>
+
+<div id="far-dialog-submit">
+	<input name="cancel" type="button" value="Cancel" class="far-cancel" />
+	<input name="submit" type="button" value="Submit" class="far-submit" />
+</div>
+<input id="far-dialog-cancel" type="button" value="x" title="Cancel" class="far-cancel" />

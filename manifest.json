@@ -30,9 +30,13 @@
 				"http://*/*",
 				"https://*/*"
 			],
+			"css": [
+				"dialog.css"
+			],
 			"js": [
 				"3rdparty/jquery.js",
-				"FAR.js"
+				"FAR.js",
+				"FARExpect.js"
 			]
 		}
 	]

@@ -1,0 +1,151 @@
+#far-dialog-holder { font-size:14px; }
+#far-dialog-holder input { font-size:14px; font-weight:normal; }
+
+#far-dialog-holder, #far-dialog-holder h1 {
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+#far-dialog-holder {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+}
+
+#far-dialog-background {
+	background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255, 0) 100% );
+	background-size: 20px 20px;
+	background-color: #999;
+	opacity:.5;
+	z-index:2147483646;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+}
+
+#far-dialog {
+	position:absolute;
+	z-index:2147483647;
+	left:50%;
+	margin-left:-200px;
+	width:400px;
+	top:200px;
+	min-height:100px;
+	background: white;
+	border: 1px #999 solid;
+	padding: 10px;
+	-webkit-border-radius:12px;
+	-webkit-box-shadow: 4px 4px 4px #999;
+}
+
+#far-dialog h1 {
+	line-height: normal;
+	font-size: 24px;
+	font-weight: bold;
+	border: 0;
+	border-bottom: 2px #eee solid;
+	padding: 0 0 5px 0;
+	margin:0 0 8px 0;
+	color: #555;
+}
+
+#far-dialog label, #far-dialog label span {
+	font-weight:bold;
+	color:#444;
+	font-size:14px;
+}
+#far-dialog label {
+	display:block;
+	width:150px;
+	height:30px;
+	margin:5px 0;
+	position:relative;
+	padding-top:3px;
+}
+#far-dialog input, #far-dialog select {
+	position:absolute;
+	top:0;
+	left: 150px;
+	cursor:pointer;
+}
+
+#far-dialog input[type=text] {
+	width:240px;
+	max-width:240px;
+}
+#far-dialog input[type=number] {
+	width:60px;
+	max-width:60px;
+}
+
+#far-dialog input[type=button], #far-dialog input[type=submit] {
+	-webkit-border-radius: 3px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	-webkit-user-select: none;
+	background: -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+	border: 1px solid #AAA;
+	color: #444;
+	font-size: inherit;
+	margin-bottom: 0;
+	min-width: 4em;
+	padding: 3px 12px;
+}
+
+#far-dialog select {
+	-webkit-appearance: button;
+	-webkit-border-radius: 3px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	-webkit-padding-end: 20px;
+	-webkit-padding-start: 8px;
+	-webkit-user-select: none;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAICAYAAAAbQcSUAAAAWklEQVQokWNgoAOIAuI0PDiKaJMSgYCZmfkbkPkfHYPEQfJEG/b//3+FBQsWLGRjY/uJbBCIDxIHyRNtGDYDyTYI3UA+Pr4vFBmEbODbt2+bKDYIyUBWYtQBAIRzRP/XKJ//AAAAAElFTkSuQmCC),
+		-webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+	background-position: center right;
+	background-repeat: no-repeat;
+	border: 1px solid #AAA;
+	color: #555;
+	font-size: inherit;
+	margin: 0;
+	overflow: hidden;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#far-dialog input[type="password"], #far-dialog input[type="text"], #far-dialog input[type="url"], #far-dialog input:not([type]) {
+	-webkit-border-radius: 2px;
+	border: 1px solid #AAA;
+	font-size: inherit;
+	padding: 3px;
+}
+
+#far-dialog-submit {
+	position:relative;
+	height:30px;
+	text-align:right;
+}
+#far-dialog-submit input { position:static; }
+#far-dialog input.far-submit { background: -webkit-linear-gradient(#FAFFFA, #F4FFF4 40%, #E5FFE5); }
+#far-dialog input.far-cancel { background: -webkit-linear-gradient(#FFFAFA, #FFF4F4 40%, #FFE5E5); }
+
+#far-dialog #far-dialog-cancel {
+	position:absolute;
+	top:13px;
+	right:13px;
+	width:20px;
+	height:20px;
+	min-width:0;
+	padding:0;
+	left:auto;
+	font-family:sans-serif;
+	font-weight:bold;
+}
+
+#far-dialog input[name=far-expect-selector] {
+	background:#eee;
+	color:#666;
+}
