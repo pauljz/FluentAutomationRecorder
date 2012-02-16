@@ -193,6 +193,12 @@ body {
 	padding-left:1em;
 }
 
+#recording-steps li .waittime {
+	font-style:italic;
+	color: #333;
+	padding-right:1em;
+}
+
 #recording-steps li .value:before { content: "\201C"; margin-right:.25em; color:#888; }
 #recording-steps li .value:after {  content: "\201D"; margin-left:.25em; color:#888; }
 

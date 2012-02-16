@@ -112,11 +112,21 @@
 								html: $data.Arguments ? $data.Arguments.URL : ''
 							"></span>
 							
+							<span class="selector" data-bind="
+								visible: $data.Arguments ? $data.Arguments.FileName : '',
+								html: $data.Arguments ? $data.Arguments.FileName : ''
+							"></span>
+							
+							<span class="waittime" data-bind="
+								visible: $data.Arguments ? $data.Arguments.Milliseconds : '',
+								html: $data.Arguments ? $data.Arguments.Milliseconds + ' ms' : ''
+							"></span>
+							
 							<span class="value" data-bind="
 								visible: $data.Arguments ? $data.Arguments.Values : '',
 								html: $data.Arguments ? $data.Arguments.Values : ''
 							"></span>						
-							
+														
 							<span class="url" data-bind="visible: $data.Arguments ? $data.Arguments.Url : ''">
 								<a target="_BLANK" data-bind="
 									attr: { href: $data.Arguments ? $data.Arguments.Url : '' },

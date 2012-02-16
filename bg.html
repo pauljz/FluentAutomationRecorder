@@ -13,8 +13,9 @@ Status = {
 
 Recordings = [];
 RecordingStatus = [];
-
-ContextMenuExpectID = null;
+LastRecordedActions = [];
+ContextMenus = [];
+ImplicitWait = false;
 
 function UpdateTabBindings(tabId) {
 	
@@ -28,20 +29,77 @@ function UpdateTabBindings(tabId) {
 			if ( status == Status.Recording ) {
 				chrome.browserAction.setIcon( { path: "images/icon_19.png" } );
 				
-				ContextMenuExpectID = chrome.contextMenus.create({
-					contexts: ['all'],
-					title: "I Expect ...",
-					onclick: function( info, tab ) {
-						chrome.tabs.sendRequest( tab.id, { Method: 'OpenExpectDialog' }, function(){} );
+				var popups = [
+					{
+						contexts: ['all'],
+						title: "I Expect ...",
+						onclick: function( info, tab ) {
+							chrome.tabs.sendRequest( tab.id, { Method: 'OpenExpectDialog' }, function(){} );
+						}
+					},{
+						contexts: ['all'],
+						type: "separator"
+					},{
+						contexts: ['all'],
+						title: "Wait 0.5 seconds",
+						onclick: function( info, tab ) {
+							Recordings[ tab.id ].push( { Name: 'Wait', Arguments: { Milliseconds: 500 } } );
+						}
+					},{
+						contexts: ['all'],
+						title: "Wait 1 seconds",
+						onclick: function( info, tab ) {
+							Recordings[ tab.id ].push( { Name: 'Wait', Arguments: { Milliseconds: 1000 } } );
+						}
+					},{
+						contexts: ['all'],
+						title: "Wait 3 seconds",
+						onclick: function( info, tab ) {
+							Recordings[ tab.id ].push( { Name: 'Wait', Arguments: { Milliseconds: 3000 } } );
+						}
+					},{
+						contexts: ['all'],
+						title: "Wait...",
+						onclick: function( info, tab ) {
+							var ms = Math.round( parseFloat( prompt( 'Wait how many seconds?' ) ) * 1000 );
+							Recordings[ tab.id ].push( { Name: 'Wait', Arguments: { Milliseconds: ms } } );
+						}
+					},{
+						contexts: ['all'],
+						title: "Implicit Wait",
+						type: 'checkbox',
+						checked: ImplicitWait,
+						onclick: function( info, tab ) {
+							ImplicitWait = info.checked;
+						}
+					},{
+						contexts: ['all'],
+						type: "separator"
+					},{
+						contexts: ['all'],
+						title: "Screenshot",
+						onclick: function( info, tab ) {
+							Recordings[ tab.id ].push( { Name: 'Screenshot', Arguments: { FileName: 'recorder-screenshot-' + (new Date()).getTime() } } );
+						}
+					},{
+						contexts: ['all'],
+						type: "separator"
+					},{						
+						contexts: ['all'],
+						title: "Stop Recording",
+						onclick: StopRecording
 					}
-				});
+				];
+				
+				while ( popups.length ) {
+					ContextMenus.push( chrome.contextMenus.create( popups.shift() ) );
+				}
 				
 			} else {
 				chrome.browserAction.setIcon( { path: "images/icon_19_inactive.png" } );
-				
-				chrome.contextMenus.remove( ContextMenuExpectID );
-				ContextMenuExpectID = null;
-				
+				while ( ContextMenus.length ) {
+					chrome.contextMenus.remove( ContextMenus.pop() );
+				}
 			}
 		});
 	}
@@ -60,6 +118,7 @@ function GetRecordingStatus( request, sender, sendResponse ) {
 function StartRecording( request, sender, sendResponse ) {
 	chrome.tabs.getSelected( null, function(tab) {
 		RecordingStatus[ tab.id ] = Status.Recording;
+		LastRecordedActions[ tab.id ] = (new Date()).getTime();
 
 		Recordings[ tab.id ] = [];
 		// and add the current URL as an Open event
@@ -97,29 +156,44 @@ function PauseRecording( request, sender, sendResponse ) {
 function ResumeRecording( request, sender, sendResponse ) {
 	chrome.tabs.getSelected( null, function(tab) {
 		RecordingStatus[ tab.id ] = Status.Recording;
+		LastRecordedActions[ tab.id ] = (new Date()).getTime();
 		UpdateTabBindings();
 		sendResponse({});
 	});
 }
 
 function SaveAction( request, sender, sendResponse ) {
-	
+	var tabId = sender.tab.id;
 	// make sure we are recording
-	var status = RecordingStatus[sender.tab.id];
+	var status = RecordingStatus[tabId];
 	if ( status == Status.Recording ) {
 
 		// we are recording, but no recording has happened for this tab yet, so initialize the array
-		if ( typeof Recordings[ sender.tab.id ] === 'undefined' ) {
-			Recordings[ sender.tab.id ] = [];
+		if ( typeof Recordings[ tabId ] === 'undefined' ) {
+			Recordings[ tabId ] = [];
+			LastRecordedActions[ tabId ] = (new Date()).getTime();
 			// and add the current URL as an Open event
-			Recordings[ sender.tab.id ].push( {
+			Recordings[ tabId ].push( {
 				Name: 'Open',
 				Arguments: {
 					Url: sender.tab.url
 				}
-			} );			
+			} );
+		} else {
+			// Don't implicit wait before the first action
+			if ( ImplicitWait ) {
+				Recordings[ tabId ].push( {
+					Name: 'Wait',
+					Arguments: {
+						Milliseconds: ( (new Date()).getTime() - LastRecordedActions[ tabId ] )
+					}
+				} );
+				console.log( (new Date()).getTime() - LastRecordedActions[ tabId ] );
+			}
 		}
-		Recordings[ sender.tab.id ].push( request.Action );
+		
+		Recordings[ tabId ].push( request.Action );
+		LastRecordedActions[ tabId ] = (new Date()).getTime();
 		
 	}
 	sendResponse({});
