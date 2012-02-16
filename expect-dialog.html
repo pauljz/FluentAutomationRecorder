@@ -6,12 +6,13 @@
 		<option value="Value">Value</option>
 		<option value="Element">Element</option>
 		<option value="Count">Count</option>
-		<option value="CssClass">CSS Class</option>
-		<option value="Popup">Popup</option>
+		<option value="Class">Class</option>
+		<option value="Alert">Alert</option>
+		<option value="Url">URL</option>
 	</select>
 </label>
 
-<label data-farmode="Text,Value,CssClass,Popup">
+<label data-farmode="Text,Value,Class,Alert">
 	<input name="far-expect-text" type="text" />
 </label>
 
@@ -19,9 +20,13 @@
 	<input name="far-expect-count" type="number" />
 </label>
 
-<label data-farmode="Text,Value,Element,Count,CssClass">
+<label data-farmode="Url">
+	<input name="far-expect-url" name="far-expect-url" type="text" />
+</label>
+
+<label data-farmode="Text,Value,Element,Count,Class">
 	<span data-farmode="Text,Value">In ...</span>
-	<span data-farmode="CssClass">On ...</span>
+	<span data-farmode="Class">On ...</span>
 	<span data-farmode="Count">Of ...</span>
 	<input name="far-expect-selector" type="text" />
 </label>

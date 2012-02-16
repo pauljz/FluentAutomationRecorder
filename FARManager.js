@@ -137,12 +137,20 @@ FARManager = {
 	},
 	
 	RunTest: function(event) {
+		
+		var steps = JSON.parse( $('#recording-json').val() );
+		var data = {
+			ShowInterface: false,
+			Commands: steps,
+			ServiceModeEnabled: true
+		};
+		
 		$.ajax({
 			type: "POST",
 			contentType: "application/json; charset=utf-8",
 			url: "http://localhost:10001/RunTest",
-			data: $('#recording-json').val()
-		})
+			data: JSON.stringify(data)
+		});
 	},
 	
 	UpdateSettings: function() {

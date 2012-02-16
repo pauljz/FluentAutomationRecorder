@@ -14,26 +14,41 @@ Status = {
 Recordings = [];
 RecordingStatus = [];
 
-function UpdateIcon(tabId) {
+ContextMenuExpectID = null;
+
+function UpdateTabBindings(tabId) {
 	
 	if ( tabId === null ) {
 		chrome.tabs.getSelected( null, function(tab) {
-				UpdateIcon(tab.id);
+				UpdateTabBindings(tab.id);
 		});
 	} else {
 		chrome.tabs.getSelected( null, function(tab) {
 			var status = RecordingStatus[tab.id];
 			if ( status == Status.Recording ) {
 				chrome.browserAction.setIcon( { path: "images/icon_19.png" } );
+				
+				ContextMenuExpectID = chrome.contextMenus.create({
+					contexts: ['all'],
+					title: "I Expect ...",
+					onclick: function( info, tab ) {
+						chrome.tabs.sendRequest( tab.id, { Method: 'OpenExpectDialog' }, function(){} );
+					}
+				});
+				
 			} else {
 				chrome.browserAction.setIcon( { path: "images/icon_19_inactive.png" } );
+				
+				chrome.contextMenus.remove( ContextMenuExpectID );
+				ContextMenuExpectID = null;
+				
 			}
 		});
 	}
 }
 
 chrome.tabs.onSelectionChanged.addListener( function( tabId, selectInfo) {
-	UpdateIcon(tabId);
+	UpdateTabBindings(tabId);
 });
 
 function GetRecordingStatus( request, sender, sendResponse ) {
@@ -55,7 +70,7 @@ function StartRecording( request, sender, sendResponse ) {
 			}
 		} );		
 		
-		UpdateIcon();
+		UpdateTabBindings();
 		sendResponse({});
 	});
 }
@@ -63,7 +78,7 @@ function StartRecording( request, sender, sendResponse ) {
 function StopRecording( request, sender, sendResponse ) {
 	chrome.tabs.getSelected( null, function(tab) {
 		RecordingStatus[ tab.id ] = Status.Stopped;
-		UpdateIcon();
+		UpdateTabBindings();
 		var recording = Recordings[ tab.id ]
 		FARDB.Put( recording );
 		delete Recordings[ tab.id ];
@@ -74,7 +89,7 @@ function StopRecording( request, sender, sendResponse ) {
 function PauseRecording( request, sender, sendResponse ) {
 	chrome.tabs.getSelected( null, function(tab) {
 		RecordingStatus[ tab.id ] = Status.Paused;
-		UpdateIcon();
+		UpdateTabBindings();
 		sendResponse({});
 	});
 }
@@ -82,7 +97,7 @@ function PauseRecording( request, sender, sendResponse ) {
 function ResumeRecording( request, sender, sendResponse ) {
 	chrome.tabs.getSelected( null, function(tab) {
 		RecordingStatus[ tab.id ] = Status.Recording;
-		UpdateIcon();
+		UpdateTabBindings();
 		sendResponse({});
 	});
 }

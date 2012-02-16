@@ -69,7 +69,6 @@
 	position:absolute;
 	top:0;
 	left: 150px;
-	cursor:pointer;
 }
 
 #far-dialog input[type=text] {
@@ -92,6 +91,7 @@
 	margin-bottom: 0;
 	min-width: 4em;
 	padding: 3px 12px;
+	cursor:pointer;
 }
 
 #far-dialog select {
@@ -145,7 +145,8 @@
 	font-weight:bold;
 }
 
-#far-dialog input[name=far-expect-selector] {
+#far-dialog input[name=far-expect-selector],
+#far-dialog input[name=far-expect-url] {
 	background:#eee;
 	color:#666;
 }

@@ -6,13 +6,15 @@
 	"options_page": "manage.html",
 	
 	"icons": {
+		"16": "images/icon_19_inactive.png",
 		"128": "images/icon_128.png"
 	},
 	
 	"permissions": [
 		"http://*/",
 		"https://*/",
-		"tabs"
+		"tabs",
+		"contextMenus"
 	],
 	
 	"options_page": "manage.html",

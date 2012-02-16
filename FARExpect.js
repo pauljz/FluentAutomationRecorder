@@ -1,6 +1,11 @@
 var FARExpect = {
 	
-	ShowDialog: function() {
+	isOpen: false,
+	
+	ShowDialog: function(selector) {
+		selector = typeof selector === 'undefined' ? '' : selector;
+		
+		FARExpect.isOpen = true;
 		
 		// Create dialog overlay holder, background
 		$('<div>').attr('id','far-dialog-holder')
@@ -19,18 +24,47 @@ var FARExpect = {
 			dataType: 'html'
 		}).success( function(data) {
 			$('#far-dialog').html( data ).ready( FARExpect.BindActions );
+			$('#far-dialog input[name=far-expect-selector]').val(selector);
+			$('#far-dialog input[name=far-expect-url]').val(window.location.href);
 		});
 		
 	} /* ShowDialog */
 	,
 	
+	Save: function() {
+		
+		var type = $('#far-dialog [name=far-expect-type]').val();
+		var text = $('#far-dialog [name=far-expect-text]').val();
+		var count = $('#far-dialog [name=far-expect-count]').val();
+		var selector = $('#far-dialog [name=far-expect-selector]').val();
+		var url = $('#far-dialog [name=far-expect-url]').val();
+		
+		var action = {
+			Name: 'Expect' + type,
+			Selector: selector
+		};
+		
+		if ( type == 'Class' || type == 'Text' || type == 'Value' ) {
+			action.Value = text;
+		} else if ( type == 'Count' ) {
+			 action.Value = count;
+		} else if ( type == 'Alert' ) {
+			action.Text = text;
+			delete action.Selector;
+		} else if ( type == 'Url' ) {
+			action.URL = url;
+			delete action.Selector;
+		}
+		
+		FARExpect.Shutdown();
+		FAR.SaveAction(action);
+		
+	} /* Save */
+	,
+	
 	Shutdown: function() {
-		
-		// Destroy the dialog overlay
 		$('#far-dialog-holder').remove();
-		
-		// TODO - Reattach listeners
-		
+		FARExpect.isOpen = false;
 	} /* Shutdown */
 	,
 	
@@ -46,6 +80,7 @@ var FARExpect = {
 		
 		// Close the form when you cancel.
 		$('#far-dialog .far-cancel').click( FARExpect.Shutdown );
+		$('#far-dialog .far-submit').click( FARExpect.Save );
 		
 	}  /* BindActions */
 	

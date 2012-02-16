@@ -1,8 +1,15 @@
 var FAR = {
 	uniqueAttributes: [],
 	hoverTarget: null,
+	contextItem: null,
 	
 	SaveAction: function( action ) {
+		
+		if ( FARExpect.isOpen ) {
+			// Don't track within the Expect Builder
+			return;
+		}
+		
 		var send = {
 			Name: action.Name,
 			Arguments: action
@@ -113,6 +120,10 @@ var FAR = {
 					break;
 				default:
 					var whichButton = 'other:' + event.which;
+			}
+			
+			if ( whichButton == 'right' ) {
+				FAR.contextItem = event.target;
 			}
 			
 			if ( whichButton == 'left' ) {
@@ -239,6 +250,15 @@ var FAR = {
 	},
 	
 	Init: function() {
+		
+		chrome.extension.onRequest.addListener( function( request, sender, sendResponse ) {
+				switch( request.Method ) {
+					case 'OpenExpectDialog':
+						FARExpect.ShowDialog( FAR.GetSelector( FAR.contextItem ) );
+						sendResponse({});
+					break;
+				}
+		});
 		
 		chrome.extension.sendRequest( { Method: 'GetSetting', Setting: 'uniqueAttributes' }, function(response) {
 			FAR.uniqueAttributes = response;

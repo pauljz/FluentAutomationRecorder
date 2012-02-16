@@ -107,6 +107,11 @@
 								html: $data.Arguments ? $data.Arguments.Value : ''
 							"></span>
 							
+							<span class="selector" data-bind="
+								visible: $data.Arguments ? $data.Arguments.URL : '',
+								html: $data.Arguments ? $data.Arguments.URL : ''
+							"></span>
+							
 							<span class="value" data-bind="
 								visible: $data.Arguments ? $data.Arguments.Values : '',
 								html: $data.Arguments ? $data.Arguments.Values : ''
