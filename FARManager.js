@@ -122,9 +122,8 @@ FARManager = {
 		ViewModel.activeTab( attr );
 	},
 	
-	ToggleStar: function(event) {
-		var el = $(event.currentTarget);
-		var id = $( el.parent() ).attr('data-key');
+	ToggleStar: function(data) {
+		var id = data.Created;
 		
 		var recordingHolder = FARDB.Get(id);
 		if ( recordingHolder.Starred ) {
